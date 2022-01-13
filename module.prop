@@ -1,0 +1,6 @@
+id=magisk_overlayfs
+name=OverlayFS
+version=v1
+versionCode=10000
+author=HuskyDG
+description=Emulate read-write partition for read-only system partitions

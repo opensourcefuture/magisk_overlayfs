@@ -1,0 +1,1 @@
+cat /proc/filesystems | grep -q "overlay" && abort "! Your kernel doesn't support overlayfs"
