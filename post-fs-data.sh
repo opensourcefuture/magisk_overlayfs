@@ -1,4 +1,3 @@
-cat /proc/filesystems | grep -q "overlay" && exit
 unset vendor
 unset product
 unset system_ext
