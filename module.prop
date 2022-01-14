@@ -1,6 +1,6 @@
 id=magisk_overlayfs
 name=OverlayFS
-version=v1
-versionCode=10000
+version=v1.1
+versionCode=10001
 author=HuskyDG
-description=Emulate read-write partition for read-only system partitions
+description=Emulate read-write partition for read-only system partitions (Only work with Android 10+)
