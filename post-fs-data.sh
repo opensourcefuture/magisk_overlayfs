@@ -13,6 +13,7 @@ TMPDIR="$MAGISKTMP/.magisk/tmp"
 # exec &>>"$MAGISKTMP/mount_error.txt
 
 DATA_BLOCK="$(mount | grep " /data " | awk '{ print $1 }')"
+DATA_BLOCK="/dev/block/$(basename "$DATA_BLOCK")"
 test -z "$DATA_BLOCK" && exit
 DATA_MOUNTPOINT="/dev/mnt_mirror/data"
 OVERLAYFS_DIR="/dev/mnt_mirror/overlay"
@@ -73,6 +74,7 @@ done
 
 mk_nullchar_dev(){
 TARGET="$1"
+rm -rf "$TARGET"
 mkdir -p "${TARGET%/*}"
 mknod "$TARGET" c 0 0
 }
