@@ -41,7 +41,7 @@ extra="$1"
 IFS=$'\n'
 modules="$(find $DATA_MOUNTPOINT/adb/modules/*/system -prune -type d)"
 ( for module in $modules; do
-[ ! -e "${module%/*}/disable" ] && [ -f "${module%/*}/overlay" ] && [ -d "${module}${extra}" ] && echo -ne "${module}/${extra}\n"
+[ ! -e "${module%/*}/disable" ] && [ -f "${module%/*}/overlay" -o -f "$MODDIR/enable" ] && [ -d "${module}${extra}" ] && echo -ne "${module}/${extra}\n"
 done ) | tr '\n' ':'
 ) }
 
