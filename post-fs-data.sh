@@ -66,18 +66,22 @@ $product
 "
 overlay /system
 
-(cd /system; find * -prune -type d ) | while read dir; do
-if [ ! -L "/system/$dir" ]; then
-mountpoint "/system/$dir" -q || overlay "/system/$dir" "$(get_modules "/$dir")"
-fi
-done
-
 mk_nullchar_dev(){
 TARGET="$1"
 rm -rf "$TARGET"
 mkdir -p "${TARGET%/*}"
 mknod "$TARGET" c 0 0
 }
+
+for delfile in /system/addon.d /system/etc/init.d /system/bin/su /system/xbin/su /vendor/bin/su; do
+mk_nullchar_dev "$MODDIR/overlay/$delfile"
+done
+
+(cd /system; find * -prune -type d ) | while read dir; do
+if [ ! -L "/system/$dir" ]; then
+mountpoint "/system/$dir" -q || overlay "/system/$dir" "$(get_modules "/$dir")"
+fi
+done
 
 
 for part in $ROPART; do
@@ -88,9 +92,7 @@ fi
 done
 done
 
-for delfile in /system/addon.d /system/etc/init.d /system/bin/su /system/xbin/su /vendor/bin/su; do
-mk_nullchar_dev "$MODDIR/overlay/$delfile"
-done
+
 
 
 cp "$MODPATH/module.prop" "$TMPDIR/overlay_status"
