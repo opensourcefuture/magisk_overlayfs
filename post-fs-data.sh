@@ -17,7 +17,6 @@ DATA_BLOCK="/dev/block/$(basename "$DATA_BLOCK")"
 test -z "$DATA_BLOCK" && exit
 DATA_MOUNTPOINT="/dev/mnt_mirror/data"
 OVERLAYFS_DIR="/dev/mnt_mirror/overlay"
-mount -t tmpfs tmpfs $SKELETON
 
 mkdir -p "$DATA_MOUNTPOINT"
 
