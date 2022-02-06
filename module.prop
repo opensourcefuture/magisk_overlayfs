@@ -1,6 +1,6 @@
 id=magisk_overlayfs
 name=OverlayFS
-version=v1.1
-versionCode=10001
+version=v1.2
+versionCode=10002
 author=HuskyDG
-description=Emulate read-write partition for read-only system partitions (Only work with Android 10+)
+description=Emulate read-write partition for read-only system partitions. This also allows you to hide Device is running Custom ROM. Your kernal must support overlayfs.
