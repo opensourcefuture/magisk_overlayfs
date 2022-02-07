@@ -6,6 +6,8 @@ From Android 10+, system may no longer to be mounted as read-write. A simple scr
 
 ## What this module do?
 
+> This module is experimental, might not work or cause some problems on some devices/ROMs
+
 - The aim of this module is to emulate system writeable by using overlayfs (modify system partition is still systemless!!)
 - Hide Custom ROM: Use overlayfs to hide `addon.d` and `init.d` of Custom ROM from Momo detection
 - Remove non-Magisk root solution if needed
