@@ -59,7 +59,13 @@ modules="$(find $data/adb/modules/*/system -prune -type d)"
 done ) | tr '\n' ':'
 ) }
 
+# default is read-only
 
+MOUNT_ATTR=ro
+
+if [ -f "$MODDIR/mountrw" ]; then
+MOUNT_ATTR=rw
+fi
 
 overlay(){ (
 fs="$1"
@@ -68,8 +74,8 @@ mkdir -p "$MODDIR/overlay/$fs"
 mkdir -p "$MODDIR/workdir/$fs"
 magisk --clone-attr "$fs" "$MODDIR/overlay/$fs"
 true
-mount -t overlay -o "ro,lowerdir=$extra$fs,upperdir=$MODDIR/overlay/$fs,workdir=$MODDIR/workdir/$fs" overlay "$fs" 
-mount -t overlay -o "ro,lowerdir=$extra$MAGISKTMP/.magisk/mirror/$fs,upperdir=$MODDIR2/overlay/$fs,workdir=$MODDIR2/workdir/$fs" overlay "$MAGISKTMP/.magisk/mirror/$fs" 
+mount -t overlay -o "$MOUNT_ATTR,lowerdir=$extra$fs,upperdir=$MODDIR/overlay/$fs,workdir=$MODDIR/workdir/$fs" overlay "$fs" 
+mount -t overlay -o "$MOUNT_ATTR,lowerdir=$extra$MAGISKTMP/.magisk/mirror/$fs,upperdir=$MODDIR2/overlay/$fs,workdir=$MODDIR2/workdir/$fs" overlay "$MAGISKTMP/.magisk/mirror/$fs" 
 mount | grep " $fs " | grep -q "^overlay" && echo -n  "$fs " >>"$TMPDIR/overlay_mountpoint"
 ) &
 }
