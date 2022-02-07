@@ -2,6 +2,9 @@ unset vendor
 unset product
 unset system_ext
 
+MODPATH="${0%/*}"
+rm -rf "$MODPATH/err_output.txt"
+exec 2>> "$MODPATH/err_output.txt"
 
 MAGISKTMP="$(magisk --path)"
 [ -z "$MAGISKTMP" ] && MAGISKTMP=/sbin
@@ -10,7 +13,7 @@ mkdir -p "$MAGISKTMP/.magisk/tmp"
 
 TMPDIR="$MAGISKTMP/.magisk/tmp"
 
-exec &>>"${0%/*}/log_error.txt"
+
 
 DATA_BLOCK="$(mount | grep " /data " | awk '{ print $1 }')"
 DATA_BLOCK="/dev/block/$(basename "$DATA_BLOCK")"
@@ -26,6 +29,7 @@ mount -o rw,seclabel,relatime $DATA_BLOCK "$DATA_MOUNTPOINT"
 
 MODID="$(basename "${0%/*}")"
 MODPATH="$DATA_MOUNTPOINT/adb/modules/$MODID"
+
 ln -fs "$DATA_MOUNTPOINT/adb/modules/$MODID" "$OVERLAYFS_DIR"
 
 MODDIR="$OVERLAYFS_DIR"
