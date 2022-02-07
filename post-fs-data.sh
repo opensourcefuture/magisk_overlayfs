@@ -74,7 +74,7 @@ $product
 for block in system system_root vendor system_ext product; do
 if [ -b "$MAGISKTMP/.magisk/block/$block" ]; then
 mkdir -p "$MAGISKTMP/.magisk/mirror/real_$block"
-mount --bind "$MAGISKTMP/.magisk/mirror/$block" "$MAGISKTMP/.magisk/mirror/real_$block"
+mount -o ro "$MAGISKTMP/.magisk/block/$block" "$MAGISKTMP/.magisk/mirror/real_$block"
 fi
 done
 
