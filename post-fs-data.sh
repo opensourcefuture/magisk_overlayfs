@@ -16,6 +16,7 @@ DATA_BLOCK="$(mount | grep " /data " | awk '{ print $1 }')"
 DATA_BLOCK="/dev/block/$(basename "$DATA_BLOCK")"
 test -z "$DATA_BLOCK" && exit
 DATA_MOUNTPOINT="/dev/mnt_mirror/data"
+MAGISK_DATAMIRROR="$MAGISKTMP/.magisk/mirror/data"
 OVERLAYFS_DIR="/dev/mnt_mirror/overlay"
 
 mkdir -p "$DATA_MOUNTPOINT"
@@ -28,6 +29,7 @@ MODPATH="$DATA_MOUNTPOINT/adb/modules/$MODID"
 ln -fs "$DATA_MOUNTPOINT/adb/modules/$MODID" "$OVERLAYFS_DIR"
 
 MODDIR="$OVERLAYFS_DIR"
+MODDIR2="$MAGISK_DATAMIRROR/adb/modules/$MODID"
 
 mount | grep -q " /vendor " && vendor=/vendor
 mount | grep -q " /system_ext " && system_ext=/system_ext
@@ -37,9 +39,10 @@ mount | grep -q " /product " && product=/product
 
 
 get_modules(){ (
-extra="$1"
+extra="$1"; data="$2"
+test -z "$data" && data="$DATA_MOUNTPOINT"
 IFS=$'\n'
-modules="$(find $DATA_MOUNTPOINT/adb/modules/*/system -prune -type d)"
+modules="$(find $data/adb/modules/*/system -prune -type d)"
 ( for module in $modules; do
 [ ! -e "${module%/*}/disable" ] && [ -f "${module%/*}/overlay" -o -f "$MODDIR/enable" ] && [ -d "${module}${extra}" ] && echo -ne "${module}/${extra}\n"
 done ) | tr '\n' ':'
@@ -47,7 +50,7 @@ done ) | tr '\n' ':'
 
 
 
-overlay(){
+overlay(){ (
 fs="$1"
 extra="$2"
 mkdir -p "$MODDIR/overlay/$fs"
@@ -55,14 +58,26 @@ mkdir -p "$MODDIR/workdir/$fs"
 magisk --clone-attr "$fs" "$MODDIR/overlay/$fs"
 true
 mount -t overlay -o "ro,lowerdir=$extra$fs,upperdir=$MODDIR/overlay/$fs,workdir=$MODDIR/workdir/$fs" overlay "$fs" 
+mount -t overlay -o "ro,lowerdir=$extra$MAGISKTMP/.magisk/mirror/$fs,upperdir=$MODDIR2/overlay/$fs,workdir=$MODDIR2/workdir/$fs" overlay "$MAGISKTMP/.magisk/mirror/$fs" 
 mount | grep " $fs " | grep -q "^overlay" && echo -n  "$fs " >>"$TMPDIR/overlay_mountpoint"
+) &
 }
+
+
 
 ROPART="
 $vendor
 $system_ext
 $product
 "
+
+for block in system system_root vendor system_ext product; do
+if [ -b "$MAGISKTMP/.magisk/block/$block" ]; then
+mkdir -p "$MAGISKTMP/.magisk/mirror/real_$block"
+mount --bind "$MAGISKTMP/.magisk/mirror/$block" "$MAGISKTMP/.magisk/mirror/real_$block"
+fi
+done
+
 overlay /system
 
 mk_nullchar_dev(){
@@ -91,7 +106,7 @@ fi
 done
 done
 
-
+sleep 0.05
 
 
 cp "$MODPATH/module.prop" "$TMPDIR/overlay_status"
