@@ -10,7 +10,7 @@ mkdir -p "$MAGISKTMP/.magisk/tmp"
 
 TMPDIR="$MAGISKTMP/.magisk/tmp"
 
-# exec &>>"$MAGISKTMP/mount_error.txt
+exec &>>"${0%/*}/log_error.txt"
 
 DATA_BLOCK="$(mount | grep " /data " | awk '{ print $1 }')"
 DATA_BLOCK="/dev/block/$(basename "$DATA_BLOCK")"
@@ -35,7 +35,14 @@ mount | grep -q " /vendor " && vendor=/vendor
 mount | grep -q " /system_ext " && system_ext=/system_ext
 mount | grep -q " /product " && product=/product
 
+# support replace folder for overlay like Magic Mount can do
 
+( IFS=$'\n'
+list_folder="$(find /data/adb/modules/*/system/* -type d)"
+for dir in $list_folder; do
+test -f "$dir/.replace" && setfattr -n trusted.overlay.opaque -v y "$dir" || setfattr -x trusted.overlay.opaque "$dir"
+done
+)
 
 
 get_modules(){ (
@@ -87,9 +94,14 @@ mkdir -p "${TARGET%/*}"
 mknod "$TARGET" c 0 0
 }
 
-for delfile in /system/addon.d /system/etc/init.d /system/bin/su /system/xbin/su /vendor/bin/su; do
+
+# emulate files/directories are deleted
+
+for delfile in /system/addon.d /system/etc/init.d /system/bin/su /system/xbin/su /vendor/bin/su /system/etc/.has_daemon_su; do
 mk_nullchar_dev "$MODDIR/overlay/$delfile"
 done
+
+# merge modified /system, /vendor, /product, ... from modules to real partition (do not merge on root directory of these partition)
 
 (cd /system; find * -prune -type d ) | while read dir; do
 if [ ! -L "/system/$dir" ]; then
@@ -117,7 +129,7 @@ MOUNTED=$(cat "$TMPDIR/overlay_mountpoint")
 
 DESC="OverlayFS is working normally 😋. Loaded overlay on $MOUNTED"
 
-[ -z "$MOUNTED" ] && MOUNTED="OverlayFS is not working!! ☹️"
+[ ! "$MOUNTED" ] && MOUNTED="OverlayFS is not working!! ☹️"
 
 
 sed -Ei "s|^description=(\[.*][[:space:]]*)?|description=[ $DESC ] |g" "$TMPDIR/overlay_status"
