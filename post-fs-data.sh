@@ -22,9 +22,10 @@ DATA_MOUNTPOINT="/dev/mnt_mirror/data"
 MAGISK_DATAMIRROR="$MAGISKTMP/.magisk/mirror/data"
 OVERLAYFS_DIR="/dev/mnt_mirror/overlay"
 
-mkdir -p "$DATA_MOUNTPOINT"
+mkdir -p "/dev/mnt_mirror"
+ln -fs "$MAGISK_DATAMIRROR" "$DATA_MOUNTPOINT"
 
-mount -o rw,seclabel,relatime $DATA_BLOCK "$DATA_MOUNTPOINT"
+#mount -o rw,seclabel,relatime $DATA_BLOCK "$DATA_MOUNTPOINT"
 
 
 MODID="$(basename "${0%/*}")"
