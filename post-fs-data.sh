@@ -63,10 +63,14 @@ done ) | tr '\n' ':'
 # default is read-only
 
 MOUNT_ATTR=ro
-
+LOCK_RO=false
 if [ -f "$MODDIR/mountrw" ]; then
 MOUNT_ATTR=rw
+elif [ -f "$MODDIR/lockro" ]; then
+MOUNT_ATTR=ro
+LOCK_RO=true
 fi
+
 
 overlay(){ (
 fs="$1"
@@ -75,8 +79,15 @@ mkdir -p "$MODDIR/overlay/$fs"
 mkdir -p "$MODDIR/workdir/$fs"
 magisk --clone-attr "$fs" "$MODDIR/overlay/$fs"
 true
-mount -t overlay -o "$MOUNT_ATTR,lowerdir=$extra$fs,upperdir=$MODDIR/overlay/$fs,workdir=$MODDIR/workdir/$fs" overlay "$fs" 
-mount -t overlay -o "$MOUNT_ATTR,lowerdir=$extra$MAGISKTMP/.magisk/mirror/$fs,upperdir=$MODDIR2/overlay/$fs,workdir=$MODDIR2/workdir/$fs" overlay "$MAGISKTMP/.magisk/mirror/$fs" 
+MOUNT_OPTION="lowerdir=$extra$fs,upperdir=$MODDIR/overlay/$fs,workdir=$MODDIR/workdir/$fs"
+MOUNT_OPTION2="lowerdir=$extra$MAGISKTMP/.magisk/mirror/$fs,upperdir=$MODDIR2/overlay/$fs,workdir=$MODDIR2/workdir/$fs"
+if $LOCK_RO; then
+MOUNT_OPTION="lowerdir=$MODDIR/overlay/$fs:$extra$fs"
+MOUNT_OPTION2="lowerdir=$MODDIR2/overlay/$fs:$extra$MAGISKTMP/.magisk/mirror/$fs"
+fi
+
+mount -t overlay -o "$MOUNT_ATTR,$MOUNT_OPTION" overlay "$fs" 
+mount -t overlay -o "$MOUNT_ATTR,$MOUNT_OPTION2" overlay "$MAGISKTMP/.magisk/mirror/$fs" 
 mount | grep " $fs " | grep -q "^overlay" && echo -n  "$fs " >>"$TMPDIR/overlay_mountpoint"
 ) &
 }
