@@ -142,18 +142,30 @@ done
 
 sleep 0.05
 
+module_status(){
+
+COUNT=0
+
+IFS=$'\n'
+modules="$(find /data/adb/modules/*/system -prune -type d)"
+for module in $modules; do
+[ ! -e "${module%/*}/disable" ] && [ -f "${module%/*}/overlay" -o -f "$MODDIR/enable" ] && COUNT=$(($COUNT+1))
+done
 
 cp "$MODPATH/module.prop" "$TMPDIR/overlay_status"
 
 MOUNTED=$(cat "$TMPDIR/overlay_mountpoint")
 
-[ "${#MOUNTED}" -gt 50 ] && MOUNTED="${MOUNTED: 0: 50}..."
+[ "${#MOUNTED}" -gt 50 ] && MOUNTED="${MOUNTED: 0: 50}... and more"
 
-DESC="OverlayFS is working normally 😋. Loaded overlay on $MOUNTED"
+DESC="OverlayFS is working normally 😋. Loaded overlay on $MOUNTED for $COUNT module(s)"
 
-[ ! "$MOUNTED" ] && MOUNTED="OverlayFS is not working!! ☹️"
+[ ! "$MOUNTED" ] && DESC="OverlayFS is not working!! ☹️"
 
 
 sed -Ei "s|^description=(\[.*][[:space:]]*)?|description=[ $DESC ] |g" "$TMPDIR/overlay_status"
 
 mount --bind "$TMPDIR/overlay_status" "$MAGISKTMP/.magisk/modules/$MODID/module.prop"
+}
+
+module_status &
