@@ -16,5 +16,7 @@ From Android 10+, system may no longer to be mounted as read-write. A simple scr
     - Enable on some modules: Create `overlay` and `skip_mount` (if you don't want to use Magic Mount) dummy file in which module directory you want to enable this feature
     - Enable for all modules (Global mode): Create `enable` dummy file in `/data/adb/modules/magisk_overlayfs`
 
-
-<img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-132556_Adware.png" width="50%" /><img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-133724_Momo.png" width="50%"/>
+<p>Tested on Momo - Momo is known as a strongest detection app ever!</br>
+<img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-132556_Adware.png" />
+<img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-133724_Momo.png" />
+</p>
