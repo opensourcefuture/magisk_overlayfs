@@ -14,7 +14,12 @@ From Android 10+, system may no longer to be mounted as read-write. A simple scr
 - Remove non-Magisk root solution if needed
 - Overlay-based modules for Magisk modules: 
     - Enable on some modules: Create `overlay` and `skip_mount` (if you don't want to use Magic Mount) dummy file in which module directory you want to enable this feature
-    - Enable for all modules (Global mode): Create `enable` dummy file in `/data/adb/modules/magisk_overlayfs`
+    - Enable for all modules (Global mode): Create `enable` dummy file in `/data/adb/modules/magisk_overlayfs` and create `skip_mount` for all modules, you can do it by using this command in Terminal Emulator: 
+```
+for module in `ls /data/adb/modules`; do
+touch /data/adb/modules/$module/skip_mount
+done
+```
 
 <p>Tested on <a href="https://www.coolapk.com/apk/io.github.vvb2060.mahoshojo">Momo</a> - Momo is known as a strongest detection app ever!</br>
 <img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-132556_Adware.png" />
