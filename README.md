@@ -20,3 +20,11 @@ From Android 10+, system may no longer to be mounted as read-write. A simple scr
 <img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-132556_Adware.png" />
 <img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-133724_Momo.png" />
 </p>
+
+## Magic Mount vs OverlayFS
+
+| Magic Mount | OverlayFS |
+| :--: | :--: |
+| Work on almost kernel | Only work if kernel support (usually Android 10+) |
+| Does not support delete files systemlessly (It can but very complicated) | Can emulate files have been deleted without changing the original partition make remove files systemlessly possible |
+| When a module want to add a file into real partition, Magisk cannot add it directly, has to do under-hood multiple mount bind tasks to achieve it | Add files by combining between lowerdir and upperdir |
