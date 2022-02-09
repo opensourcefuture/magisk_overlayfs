@@ -26,6 +26,8 @@ done
 <img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-133724_Momo.png" />
 </p>
 
+**NOTE: Modifications to OverlayFS is not hidden (unmounted) along with MagiskHide/DenyList so it is useful for some font modules on Android 12 due to new behavior, make sure your modules id doesn't include "magisk" word, DO NOT enable Global mode if not neccessary**
+
 ## Magic Mount vs OverlayFS
 
 | Magic Mount | OverlayFS |
