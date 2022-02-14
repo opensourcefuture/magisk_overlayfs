@@ -160,7 +160,7 @@ MOUNTED=$(cat "$TMPDIR/overlay_mountpoint")
 
 DESC="OverlayFS is working normally 😋. Loaded overlay on $MOUNTED for $COUNT module(s)"
 
-[ ! "$MOUNTED" ] && DESC="OverlayFS is not working!! ☹️"
+[ ! "$MOUNTED" ] && DESC="OverlayFS is not working!! Maybe your kernel does not support overlayfs ☹️"
 
 
 sed -Ei "s|^description=(\[.*][[:space:]]*)?|description=[ $DESC ] |g" "$TMPDIR/overlay_status"
