@@ -5,7 +5,7 @@ mkdir -p /dev/overlay_test/layer1
 mkdir -p /dev/overlay_test/layer2
 mkdir -p /dev/overlay_test/merged
 mount -t overlay -o lowerdir=/dev/overlay_test/layer1:/dev/overlay_test/layer2 overlay /dev/overlay_test/merged
-if mount -t overlay; then
+if mount -t overlay | grep -q "overlay" &>/dev/null; then
 is_overlayfs=true
 fi
 
