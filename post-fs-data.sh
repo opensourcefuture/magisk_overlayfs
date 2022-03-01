@@ -23,7 +23,8 @@ MAGISK_DATAMIRROR="$MAGISKTMP/.magisk/mirror/data"
 OVERLAYFS_DIR="/dev/mnt_mirror/overlay"
 
 mkdir -p "/dev/mnt_mirror"
-ln -fs "$MAGISK_DATAMIRROR" "$DATA_MOUNTPOINT"
+mkdir -p "$DATA_MOUNTPOINT"
+mount --bind "$MAGISK_DATAMIRROR" "$DATA_MOUNTPOINT"
 
 #mount -o rw,seclabel,relatime $DATA_BLOCK "$DATA_MOUNTPOINT"
 
@@ -31,7 +32,9 @@ ln -fs "$MAGISK_DATAMIRROR" "$DATA_MOUNTPOINT"
 MODID="$(basename "${0%/*}")"
 MODPATH="$DATA_MOUNTPOINT/adb/modules/$MODID"
 
-ln -fs "$DATA_MOUNTPOINT/adb/modules/$MODID" "$OVERLAYFS_DIR"
+
+mkdir -p "$OVERLAYFS_DIR"
+mount --bind "$DATA_MOUNTPOINT/adb/modules/$MODID" "$OVERLAYFS_DIR"
 
 MODDIR="$OVERLAYFS_DIR"
 MODDIR2="$MAGISK_DATAMIRROR/adb/modules/$MODID"
@@ -47,14 +50,23 @@ list_folder="$(find /data/adb/modules/*/system/* -type d)"
 for dir in $list_folder; do
 test -f "$dir/.replace" && setfattr -n trusted.overlay.opaque -v y "$dir" || setfattr -x trusted.overlay.opaque "$dir"
 done
+list_module="$(find $DATA_MOUNTPOINT/adb/modules/* -prune -type d)"
+mkdir -p /dev/mnt_mirror/modules
+for module in $list_module; do
+count_id=$(($count_id + 1))
+rm -rf "/dev/mnt_mirror/modules/$count_id"
+ln -sf "$module" "/dev/mnt_mirror/modules/$count_id"
+done
+
 )
+
 
 
 get_modules(){ (
 extra="$1"; data="$2"
 test -z "$data" && data="$DATA_MOUNTPOINT"
 IFS=$'\n'
-modules="$(find $data/adb/modules/*/system -prune -type d)"
+modules="$(find /dev/mnt_mirror/modules/*/system -prune -type d)"
 ( for module in $modules; do
 [ ! -e "${module%/*}/disable" ] && [ -f "${module%/*}/overlay" -o -f "$MODDIR/enable" ] && [ -d "${module}${extra}" ] && echo -ne "${module}/${extra}\n"
 done ) | tr '\n' ':'

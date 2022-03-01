@@ -1,4 +1,8 @@
-MODID=$(basename "$MODPATH")
+if [ -z "$(pidof zygote || pidof zygote64)" ]; then
+abort "! Please flash this module from Magisk app"
+fi
+
+MODID="$(basename "$MODPATH")"
 ui_print "- Test if your kennel support overlayfs"
 is_overlayfs=false
 mkdir -p /dev/overlay_test/layer1

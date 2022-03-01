@@ -1,6 +1,6 @@
 id=magisk_overlayfs
 name=OverlayFS
-version=v1.13
-versionCode=10013
+version=v1.14
+versionCode=10014
 author=HuskyDG
 description=Implement Magic Mount base on OverlayFS and emulate read-write partition for read-only system partitions. Hide Device is running Custom ROM. Your kernel must support overlayfs.
