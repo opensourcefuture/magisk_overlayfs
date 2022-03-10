@@ -5,16 +5,16 @@ fi
 MODID="$(basename "$MODPATH")"
 ui_print "- Test if your kennel support overlayfs"
 is_overlayfs=false
-mkdir -p /dev/overlay_test/layer1
-mkdir -p /dev/overlay_test/layer2
-mkdir -p /dev/overlay_test/merged
-mount -t overlay -o lowerdir=/dev/overlay_test/layer1:/dev/overlay_test/layer2 overlay /dev/overlay_test/merged
-if mount -t overlay | grep -q " /dev/overlay_test/merged "; then
+mkdir -p /data/adb/overlay_test/layer1
+mkdir -p /data/adb/overlay_test/layer2
+mkdir -p /data/adb/overlay_test/merged
+mount -t overlay -o lowerdir=/data/adb/overlay_test/layer1:/data/adb/overlay_test/layer2 overlay /data/adb/overlay_test/merged
+if mount -t overlay | grep -q " /data/adb/overlay_test/merged "; then
 is_overlayfs=true
 fi
 
-umount -l /dev/overlay_test/*
-rm -rf /dev/overlay_test
+umount -l /data/adb/overlay_test/*
+rm -rf /data/adb/overlay_test
 
 $is_overlayfs && ui_print "- Great! Your kernel support overlayfs" || abort "! Your kernel doesn't support overlayfs"
 
