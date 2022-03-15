@@ -19,11 +19,6 @@ touch /data/adb/modules/$module/skip_mount
 done
 ```
 
-<p>Tested on <a href="https://www.coolapk.com/apk/io.github.vvb2060.mahoshojo">Momo</a> - Momo is known as a strongest detection app ever!</br>
-<img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-132556_Adware.png" />
-<img src="https://github.com/HuskyDG/huskydg.github.io/raw/main/img/Screenshot_20220207-133724_Momo.png" />
-</p>
-
 
 ## Magic Mount vs OverlayFS
 
